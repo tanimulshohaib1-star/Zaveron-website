@@ -5,7 +5,17 @@
 let cart = [];
 
 
+// ===============================
+// GOOGLE SHEETS ORDER URL
+// ===============================
+
+const ORDER_URL =
+    "https://script.google.com/macros/s/AKfycbwr479iPew3XYs5c8OBNfxKUj8ldpIwQ2sBXmY-Ewgvsru8Gm-i1PJd4hQUcmgqu1LD/exec";
+
+
+// ===============================
 // ADD TO CART
+// ===============================
 
 const products = document.querySelectorAll(".product");
 
@@ -14,19 +24,19 @@ products.forEach(function(product) {
     const priceText = product
         .querySelector(".product-info strong")
         .innerText
-        .replace("৳", "");
+        .replace("৳", "")
+        .trim();
 
     const price = parseInt(priceText);
 
     const name = product
         .querySelector(".product-info h3")
-        .innerText;
+        .innerText
+        .trim();
 
     product.addEventListener("click", function(event) {
 
-        if (
-            event.target.classList.contains("heart")
-        ) {
+        if (event.target.classList.contains("heart")) {
             return;
         }
 
@@ -44,7 +54,9 @@ products.forEach(function(product) {
 });
 
 
+// ===============================
 // UPDATE CART
+// ===============================
 
 function updateCart() {
 
@@ -72,13 +84,11 @@ hearts.forEach(function(heart) {
         if (heart.innerHTML === "♡") {
 
             heart.innerHTML = "♥";
-
             heart.style.color = "#d4ad63";
 
         } else {
 
             heart.innerHTML = "♡";
-
             heart.style.color = "white";
 
         }
@@ -93,20 +103,20 @@ hearts.forEach(function(heart) {
 // ===============================
 
 document
-.querySelector(".icons span:last-child")
-.addEventListener("click", function() {
+    .querySelector(".icons span:last-child")
+    .addEventListener("click", function() {
 
-    if (cart.length === 0) {
+        if (cart.length === 0) {
 
-        alert("Your cart is empty!");
+            alert("Your cart is empty!");
 
-        return;
+            return;
 
-    }
+        }
 
-    openCheckout();
+        openCheckout();
 
-});
+    });
 
 
 // ===============================
@@ -165,69 +175,133 @@ function updateCheckoutTotal() {
 // ===============================
 
 document
-.getElementById("checkoutForm")
-.addEventListener("submit", function(event) {
+    .getElementById("checkoutForm")
+    .addEventListener("submit", async function(event) {
 
-    event.preventDefault();
+        event.preventDefault();
 
-    const name =
-        document.getElementById("customerName").value;
+        const name =
+            document.getElementById("customerName").value.trim();
 
-    const phone =
-        document.getElementById("customerPhone").value;
+        const phone =
+            document.getElementById("customerPhone").value.trim();
 
-    const address =
-        document.getElementById("customerAddress").value;
+        const address =
+            document.getElementById("customerAddress").value.trim();
 
-    const payment =
-        document.getElementById("paymentMethod").value;
-
-
-    if (!name || !phone || !address || !payment) {
-
-        alert("Please fill all information.");
-
-        return;
-
-    }
+        const payment =
+            document.getElementById("paymentMethod").value;
 
 
-    // Order information
+        if (!name || !phone || !address || !payment) {
 
-    console.log("NEW ZAVERON ORDER");
+            alert("Please fill all information.");
 
-    console.log("Customer:", name);
+            return;
 
-    console.log("Phone:", phone);
-
-    console.log("Address:", address);
-
-    console.log("Payment:", payment);
-
-    console.log("Products:", cart);
+        }
 
 
-    // Hide form
+        // Calculate total
 
-    document
-        .getElementById("checkoutForm")
-        .style.display = "none";
+        let total = 0;
 
-
-    // Show success
-
-    document
-        .getElementById("orderSuccess")
-        .style.display = "block";
+        cart.forEach(function(item) {
+            total += item.price;
+        });
 
 
-    // Clear cart
+        // Product list
 
-    cart = [];
+        const productList = cart
+            .map(function(item) {
+                return item.name + " - ৳" + item.price;
+            })
+            .join(", ");
 
-    updateCart();
 
-});
+        // Order data
+
+        const orderData = {
+
+            name: name,
+
+            phone: phone,
+
+            address: address,
+
+            product: productList,
+
+            price: total,
+
+            payment: payment
+
+        };
+
+
+        // Disable button
+
+        const submitButton =
+            document.querySelector(".checkout-submit");
+
+        submitButton.disabled = true;
+
+        submitButton.innerText = "PLACING ORDER...";
+
+
+        try {
+
+            await fetch(ORDER_URL, {
+
+                method: "POST",
+
+                mode: "no-cors",
+
+                headers: {
+                    "Content-Type": "text/plain"
+                },
+
+                body: JSON.stringify(orderData)
+
+            });
+
+
+            // Hide form
+
+            document
+                .getElementById("checkoutForm")
+                .style.display = "none";
+
+
+            // Show success
+
+            document
+                .getElementById("orderSuccess")
+                .style.display = "block";
+
+
+            // Clear cart
+
+            cart = [];
+
+            updateCart();
+
+
+        } catch (error) {
+
+            console.error(error);
+
+            alert(
+                "Order could not be placed. Please try again."
+            );
+
+            submitButton.disabled = false;
+
+            submitButton.innerText = "PLACE ORDER";
+
+        }
+
+    });
 
 
 // ===============================
@@ -235,13 +309,13 @@ document
 // ===============================
 
 document
-.getElementById("checkoutModal")
-.addEventListener("click", function(event) {
+    .getElementById("checkoutModal")
+    .addEventListener("click", function(event) {
 
-    if (event.target === this) {
+        if (event.target === this) {
 
-        closeCheckout();
+            closeCheckout();
 
-    }
+        }
 
-});
+    });
