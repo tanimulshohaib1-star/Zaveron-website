@@ -10,8 +10,7 @@ let cart = [];
 // ===============================
 
 const ORDER_URL =
-    "https://script.google.com/macros/s/AKfycbwr479iPew3XYs5c8OBNfxKUj8ldpIwQ2sBXmY-Ewgvsru8Gm-i1PJd4hQUcmgqu1LD/exec";
-
+ https://script.google.com/macros/s/AKfycbxAWBZpg6a4AIUZNeGIuAG4EX4EPuRhocDjZZpr-cuJ5kzWXO5010jE1xHdOHyhcQj6OQ/exec
 
 // ===============================
 // ADD TO CART
