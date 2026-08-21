@@ -47,7 +47,9 @@
         <div class="icons">
             <span>⌕</span>
             <span>♙</span>
-            <span>🛒</span>
+
+            <!-- CART -->
+            <span id="cartIcon">🛒</span>
         </div>
 
     </header>
@@ -91,8 +93,6 @@
 
 
         <div class="hero-image">
-
-            <!-- পরে এখানে তোমার model image বসাবে -->
 
             <div class="image-placeholder">
                 <h2>Z</h2>
@@ -173,25 +173,34 @@
 
                     <span class="new">NEW</span>
 
-                    <button class="heart">♡</button>
+                    <button class="heart" type="button">
+                        ♡
+                    </button>
 
                     <img
                         src="images/black-shirt.jpg"
-                        alt="black full sleeve shirt"
+                        alt="Black Full Sleeve Shirt"
                     >
 
                 </div>
 
                 <div class="product-info">
 
-                    <h3> black full sleeve shirt
-                        
-                        
+                    <h3>
+                        Black Full Sleeve Shirt
                     </h3>
 
                     <strong>
                         ৳790
                     </strong>
+
+                    <!-- ADD TO CART -->
+                    <button
+                        class="add-cart-btn"
+                        type="button"
+                    >
+                        ADD TO CART 🛒
+                    </button>
 
                 </div>
 
@@ -206,11 +215,13 @@
 
                     <span class="new">NEW</span>
 
-                    <button class="heart">♡</button>
+                    <button class="heart" type="button">
+                        ♡
+                    </button>
 
                     <img
                         src="images/blue-shirt.jpg"
-                        alt="blue full sleeve shirt"
+                        alt="Blue Full Sleeve Shirt"
                     >
 
                 </div>
@@ -218,12 +229,20 @@
                 <div class="product-info">
 
                     <h3>
-                        blue full sleeve shirt
+                        Blue Full Sleeve Shirt
                     </h3>
 
                     <strong>
                         ৳790
                     </strong>
+
+                    <!-- ADD TO CART -->
+                    <button
+                        class="add-cart-btn"
+                        type="button"
+                    >
+                        ADD TO CART 🛒
+                    </button>
 
                 </div>
 
@@ -238,7 +257,9 @@
 
                     <span class="new">NEW</span>
 
-                    <button class="heart">♡</button>
+                    <button class="heart" type="button">
+                        ♡
+                    </button>
 
                     <img
                         src="https://images.unsplash.com/photo-1556821840-3a63f95609a7"
@@ -257,6 +278,14 @@
                         ৳1590
                     </strong>
 
+                    <!-- ADD TO CART -->
+                    <button
+                        class="add-cart-btn"
+                        type="button"
+                    >
+                        ADD TO CART 🛒
+                    </button>
+
                 </div>
 
             </div>
@@ -270,7 +299,9 @@
 
                     <span class="new">NEW</span>
 
-                    <button class="heart">♡</button>
+                    <button class="heart" type="button">
+                        ♡
+                    </button>
 
                     <img
                         src="https://images.unsplash.com/photo-1562157873-818bc0726f68"
@@ -289,9 +320,18 @@
                         ৳790
                     </strong>
 
+                    <!-- ADD TO CART -->
+                    <button
+                        class="add-cart-btn"
+                        type="button"
+                    >
+                        ADD TO CART 🛒
+                    </button>
+
                 </div>
 
             </div>
+
 
         </div>
 
@@ -370,66 +410,129 @@
     </footer>
 
 
-    <script src="script.js"></script>
 
+    <!-- =============================== -->
     <!-- CHECKOUT MODAL -->
+    <!-- =============================== -->
 
-<div id="checkoutModal" class="checkout-modal">
+    <div
+        id="checkoutModal"
+        class="checkout-modal"
+    >
 
-    <div class="checkout-box">
+        <div class="checkout-box">
 
-        <button class="checkout-close" onclick="closeCheckout()">×</button>
-
-        <h2>Checkout</h2>
-        <p class="checkout-subtitle">Complete your order</p>
-
-        <form id="checkoutForm">
-
-            <input
-                type="text"
-                id="customerName"
-                placeholder="Your Name"
-                required
+            <button
+                class="checkout-close"
+                onclick="closeCheckout()"
+                type="button"
             >
-
-            <input
-                type="tel"
-                id="customerPhone"
-                placeholder="Phone Number"
-                required
-            >
-
-            <textarea
-                id="customerAddress"
-                placeholder="Full Delivery Address"
-                required
-            ></textarea>
-
-            <select id="paymentMethod" required>
-                <option value="">Select Payment Method</option>
-                <option value="cod">Cash on Delivery</option>
-                <option value="bkash">bKash</option>
-            </select>
-
-            <div class="checkout-summary">
-                <span>Total</span>
-                <strong id="checkoutTotal">৳0</strong>
-            </div>
-
-            <button type="submit" class="checkout-submit">
-                PLACE ORDER
+                ×
             </button>
 
-        </form>
 
-        <div id="orderSuccess" class="order-success">
-            <h3>✓ Order Placed!</h3>
-            <p>Thank you for shopping with Zaveron.</p>
+            <h2>
+                Checkout
+            </h2>
+
+            <p class="checkout-subtitle">
+                Complete your order
+            </p>
+
+
+            <form id="checkoutForm">
+
+                <input
+                    type="text"
+                    id="customerName"
+                    placeholder="Your Name"
+                    required
+                >
+
+
+                <input
+                    type="tel"
+                    id="customerPhone"
+                    placeholder="Phone Number"
+                    required
+                >
+
+
+                <textarea
+                    id="customerAddress"
+                    placeholder="Full Delivery Address"
+                    required
+                ></textarea>
+
+
+                <select
+                    id="paymentMethod"
+                    required
+                >
+
+                    <option value="">
+                        Select Payment Method
+                    </option>
+
+                    <option value="cod">
+                        Cash on Delivery
+                    </option>
+
+                    <option value="bkash">
+                        bKash
+                    </option>
+
+                </select>
+
+
+                <div class="checkout-summary">
+
+                    <span>
+                        Total
+                    </span>
+
+                    <strong id="checkoutTotal">
+                        ৳0
+                    </strong>
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="checkout-submit"
+                >
+                    PLACE ORDER
+                </button>
+
+            </form>
+
+
+            <!-- ORDER SUCCESS -->
+
+            <div
+                id="orderSuccess"
+                class="order-success"
+            >
+
+                <h3>
+                    ✓ Order Placed!
+                </h3>
+
+                <p>
+                    Thank you for shopping with Zaveron.
+                </p>
+
+            </div>
+
         </div>
 
     </div>
 
-</div>
+
+
+    <!-- JAVASCRIPT -->
+    <script src="script.js"></script>
 
 </body>
 </html>
