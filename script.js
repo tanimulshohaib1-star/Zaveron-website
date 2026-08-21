@@ -2,108 +2,165 @@
 // ZAVERON SHOPPING CART
 // ===============================
 
-let cart = [];
+document.addEventListener("DOMContentLoaded", function () {
+
+    let cart = [];
+
+    // ===============================
+    // GOOGLE SHEETS ORDER URL
+    // ===============================
+
+    const ORDER_URL =
+        "https://script.google.com/macros/s/AKfycbxAWBZpg6a4AIUZNeGIuAG4EX4EPuRhocDjZZpr-cuJ5kzWXO5010jE1xHdOHyhcQj6OQ/exec";
 
 
-// ===============================
-// GOOGLE SHEETS ORDER URL
-// ===============================
-
-const ORDER_URL =
- https://script.google.com/macros/s/AKfycbxAWBZpg6a4AIUZNeGIuAG4EX4EPuRhocDjZZpr-cuJ5kzWXO5010jE1xHdOHyhcQj6OQ/exec
-
-// ===============================
-// ADD TO CART
-// ===============================
-
-const products = document.querySelectorAll(".product");
-
-products.forEach(function(product) {
-
-    const priceText = product
-        .querySelector(".product-info strong")
-        .innerText
-        .replace("৳", "")
-        .trim();
-
-    const price = parseInt(priceText);
-
-    const name = product
-        .querySelector(".product-info h3")
-        .innerText
-        .trim();
-
-    product.addEventListener("click", function(event) {
-
-        if (event.target.classList.contains("heart")) {
-            return;
-        }
-
-        cart.push({
-            name: name,
-            price: price
-        });
-
-        alert(name + " added to cart!");
-
-        updateCart();
-
-    });
-
-});
-
-
-// ===============================
-// UPDATE CART
-// ===============================
-
-function updateCart() {
+    // ===============================
+    // CART ICON
+    // ===============================
 
     const cartIcon =
         document.querySelector(".icons span:last-child");
 
-    cartIcon.innerHTML = "🛒 " + cart.length;
 
-}
+    // ===============================
+    // PRODUCTS
+    // ===============================
+
+    const products =
+        document.querySelectorAll(".product");
 
 
-// ===============================
-// HEART BUTTON
-// ===============================
+    products.forEach(function (product) {
 
-const hearts =
-    document.querySelectorAll(".heart");
+        const name =
+            product.querySelector(".product-info h3")
+                .innerText
+                .trim();
 
-hearts.forEach(function(heart) {
+        const priceText =
+            product.querySelector(".product-info strong")
+                .innerText
+                .replace("৳", "")
+                .trim();
 
-    heart.addEventListener("click", function(event) {
+        const price =
+            parseInt(priceText);
 
-        event.stopPropagation();
 
-        if (heart.innerHTML === "♡") {
+        // Create Add To Cart Button
 
-            heart.innerHTML = "♥";
-            heart.style.color = "#d4ad63";
+        const button =
+            document.createElement("button");
 
-        } else {
+        button.className = "add-cart-btn";
 
-            heart.innerHTML = "♡";
-            heart.style.color = "white";
+        button.innerText =
+            "ADD TO CART 🛒";
 
-        }
+
+        // Put button inside product info
+
+        product
+            .querySelector(".product-info")
+            .appendChild(button);
+
+
+        // ===============================
+        // ADD TO CART
+        // ===============================
+
+        button.addEventListener("click", function (event) {
+
+            event.stopPropagation();
+
+            cart.push({
+                name: name,
+                price: price
+            });
+
+            updateCart();
+
+            button.innerText = "ADDED ✓";
+
+            setTimeout(function () {
+                button.innerText = "ADD TO CART 🛒";
+            }, 1000);
+
+        });
+
+
+        // Prevent whole product click
+
+        product.addEventListener("click", function (event) {
+
+            if (
+                event.target.classList.contains("heart") ||
+                event.target.classList.contains("add-cart-btn")
+            ) {
+                return;
+            }
+
+        });
 
     });
 
-});
+
+    // ===============================
+    // UPDATE CART
+    // ===============================
+
+    function updateCart() {
+
+        if (cart.length === 0) {
+
+            cartIcon.innerHTML = "🛒";
+
+        } else {
+
+            cartIcon.innerHTML =
+                "🛒 " + cart.length;
+
+        }
+
+    }
 
 
-// ===============================
-// CART CLICK
-// ===============================
+    // ===============================
+    // HEART BUTTON
+    // ===============================
 
-document
-    .querySelector(".icons span:last-child")
-    .addEventListener("click", function() {
+    const hearts =
+        document.querySelectorAll(".heart");
+
+
+    hearts.forEach(function (heart) {
+
+        heart.addEventListener("click", function (event) {
+
+            event.stopPropagation();
+
+            if (heart.innerHTML === "♡") {
+
+                heart.innerHTML = "♥";
+                heart.style.color = "#d4ad63";
+
+            } else {
+
+                heart.innerHTML = "♡";
+                heart.style.color = "white";
+
+            }
+
+        });
+
+    });
+
+
+    // ===============================
+    // CART CLICK
+    // ===============================
+
+    cartIcon.addEventListener("click", function () {
 
         if (cart.length === 0) {
 
@@ -118,203 +175,258 @@ document
     });
 
 
-// ===============================
-// OPEN CHECKOUT
-// ===============================
+    // ===============================
+    // OPEN CHECKOUT
+    // ===============================
 
-function openCheckout() {
+    window.openCheckout = function () {
 
-    const modal =
-        document.getElementById("checkoutModal");
+        const modal =
+            document.getElementById("checkoutModal");
 
-    modal.classList.add("show");
+        const form =
+            document.getElementById("checkoutForm");
 
-    updateCheckoutTotal();
-
-}
-
-
-// ===============================
-// CLOSE CHECKOUT
-// ===============================
-
-function closeCheckout() {
-
-    document
-        .getElementById("checkoutModal")
-        .classList.remove("show");
-
-}
+        const success =
+            document.getElementById("orderSuccess");
 
 
-// ===============================
-// TOTAL
-// ===============================
+        form.style.display = "block";
 
-function updateCheckoutTotal() {
+        success.style.display = "none";
 
-    let total = 0;
+        modal.classList.add("show");
 
-    cart.forEach(function(item) {
+        updateCheckoutTotal();
 
-        total += item.price;
-
-    });
-
-    document
-        .getElementById("checkoutTotal")
-        .innerText =
-        "৳" + total.toLocaleString();
-
-}
+    };
 
 
-// ===============================
-// PLACE ORDER
-// ===============================
+    // ===============================
+    // CLOSE CHECKOUT
+    // ===============================
 
-document
-    .getElementById("checkoutForm")
-    .addEventListener("submit", async function(event) {
+    window.closeCheckout = function () {
 
-        event.preventDefault();
+        document
+            .getElementById("checkoutModal")
+            .classList.remove("show");
 
-        const name =
-            document.getElementById("customerName").value.trim();
-
-        const phone =
-            document.getElementById("customerPhone").value.trim();
-
-        const address =
-            document.getElementById("customerAddress").value.trim();
-
-        const payment =
-            document.getElementById("paymentMethod").value;
+    };
 
 
-        if (!name || !phone || !address || !payment) {
+    // ===============================
+    // TOTAL
+    // ===============================
 
-            alert("Please fill all information.");
-
-            return;
-
-        }
-
-
-        // Calculate total
+    function updateCheckoutTotal() {
 
         let total = 0;
 
-        cart.forEach(function(item) {
+        cart.forEach(function (item) {
+
             total += item.price;
+
         });
 
 
-        // Product list
+        document
+            .getElementById("checkoutTotal")
+            .innerText =
+            "৳" + total.toLocaleString();
 
-        const productList = cart
-            .map(function(item) {
-                return item.name + " - ৳" + item.price;
-            })
-            .join(", ");
-
-
-        // Order data
-
-        const orderData = {
-
-            name: name,
-
-            phone: phone,
-
-            address: address,
-
-            product: productList,
-
-            price: total,
-
-            payment: payment
-
-        };
+    }
 
 
-        // Disable button
+    // ===============================
+    // PLACE ORDER
+    // ===============================
 
-        const submitButton =
-            document.querySelector(".checkout-submit");
+    document
+        .getElementById("checkoutForm")
+        .addEventListener("submit", async function (event) {
 
-        submitButton.disabled = true;
-
-        submitButton.innerText = "PLACING ORDER...";
+            event.preventDefault();
 
 
-        try {
+            const name =
+                document
+                    .getElementById("customerName")
+                    .value
+                    .trim();
 
-            await fetch(ORDER_URL, {
 
-                method: "POST",
+            const phone =
+                document
+                    .getElementById("customerPhone")
+                    .value
+                    .trim();
 
-                mode: "no-cors",
 
-                headers: {
-                    "Content-Type": "text/plain"
-                },
+            const address =
+                document
+                    .getElementById("customerAddress")
+                    .value
+                    .trim();
 
-                body: JSON.stringify(orderData)
+
+            const payment =
+                document
+                    .getElementById("paymentMethod")
+                    .value;
+
+
+            if (!name || !phone || !address || !payment) {
+
+                alert("Please fill all information.");
+
+                return;
+
+            }
+
+
+            // Calculate total
+
+            let total = 0;
+
+            cart.forEach(function (item) {
+
+                total += item.price;
 
             });
 
 
-            // Hide form
+            // Product list
 
-            document
-                .getElementById("checkoutForm")
-                .style.display = "none";
+            const productList =
+                cart
+                    .map(function (item) {
 
+                        return (
+                            item.name +
+                            " - ৳" +
+                            item.price
+                        );
 
-            // Show success
-
-            document
-                .getElementById("orderSuccess")
-                .style.display = "block";
-
-
-            // Clear cart
-
-            cart = [];
-
-            updateCart();
+                    })
+                    .join(", ");
 
 
-        } catch (error) {
+            // Order data
 
-            console.error(error);
+            const orderData = {
 
-            alert(
-                "Order could not be placed. Please try again."
-            );
+                name: name,
 
-            submitButton.disabled = false;
+                phone: phone,
 
-            submitButton.innerText = "PLACE ORDER";
+                address: address,
 
-        }
+                product: productList,
 
-    });
+                price: total,
+
+                payment: payment
+
+            };
 
 
-// ===============================
-// CLOSE MODAL WHEN CLICK OUTSIDE
-// ===============================
+            // Submit button
 
-document
-    .getElementById("checkoutModal")
-    .addEventListener("click", function(event) {
+            const submitButton =
+                document.querySelector(
+                    ".checkout-submit"
+                );
 
-        if (event.target === this) {
 
-            closeCheckout();
+            submitButton.disabled = true;
 
-        }
+            submitButton.innerText =
+                "PLACING ORDER...";
 
-    });
+
+            try {
+
+                await fetch(ORDER_URL, {
+
+                    method: "POST",
+
+                    mode: "no-cors",
+
+                    headers: {
+                        "Content-Type": "text/plain"
+                    },
+
+                    body: JSON.stringify(orderData)
+
+                });
+
+
+                // Hide form
+
+                document
+                    .getElementById("checkoutForm")
+                    .style.display = "none";
+
+
+                // Show success
+
+                document
+                    .getElementById("orderSuccess")
+                    .style.display = "block";
+
+
+                // Clear cart
+
+                cart = [];
+
+                updateCart();
+
+
+                submitButton.disabled = false;
+
+                submitButton.innerText =
+                    "PLACE ORDER";
+
+
+            } catch (error) {
+
+                console.error(error);
+
+                alert(
+                    "Order could not be placed. Please try again."
+                );
+
+
+                submitButton.disabled = false;
+
+                submitButton.innerText =
+                    "PLACE ORDER";
+
+            }
+
+        });
+
+
+    // ===============================
+    // CLOSE MODAL OUTSIDE
+    // ===============================
+
+    document
+        .getElementById("checkoutModal")
+        .addEventListener("click", function (event) {
+
+            if (event.target === this) {
+
+                closeCheckout();
+
+            }
+
+        });
+
+
+    // Initial cart
+
+    updateCart();
+
+});
